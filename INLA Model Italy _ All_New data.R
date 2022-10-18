@@ -7,35 +7,10 @@ library(ggplot2)
 
 setwd(dirname(getActiveDocumentContext()$path)) #set file location as working directory
 
-####Prepping and loading the surveillance data and shapefile####
+####Preparing and loading the surveillance data and shapefile####
+#Loading shapefiles
 it_map1 <- st_read("./Italy Shapefile/ITA_adm2.shp") #this map is used for masking the projections of the model
 it_map <- map_data("italy") #this map is used for visualisation at the end 
-sampled_map <- it_map1[c(1 : 31, 36 : 40, 57 : 63, 72 : 88, 101, 102),]
-
-basilicata_S_locations <- read.csv("./BASILICATA_EC_S.csv")
-basilicata_G_locations <- read.csv("./BASILICATA_EC_G.csv")
-basilicata_C_locations <- read.csv("./New data/CATTLE_BUFFALO_FARMS_COORDINATES.csv")
-basilicata_C_locations <- basilicata_C_locations[-c(177, 2208, 707, 1336, 2290, 2289, 1237 , 2216, 2232, 2221), ] #removing anomalous locations
-salerno_locations <- read.csv("./New data/SHEEP_FARMS_COORDINATES_SALERNO_2015.csv")
-salerno_locations[, 5] <- "Sheep" 
-colnames(salerno_locations) <- c("Id", "Ec", "Longitude", "Latitude", "Species")
-
-basilicata_C_locations[is.na(basilicata_C_locations)] <- 0
-basilicata_C_locations$Latitude <- as.numeric(basilicata_C_locations$Latitude)
-basilicata_C_locations$Longitude <- as.numeric(basilicata_C_locations$Longitude)
-basilicata_C_locations = subset(basilicata_C_locations, select = -c(slaughtering.date))
-basilicata_G_locations = subset(basilicata_G_locations, select = -c(Municipality))
-basilicata_S_locations = subset(basilicata_S_locations, select = -c(Municipality))
-salerno_locations = subset(salerno_locations, select = -c(Municipality))
-colnames(basilicata_C_locations) <- c("Id", "Latitude", "Longitude", "Species", "Ec")
-colnames(basilicata_G_locations) <- c("Id", "Latitude", "Longitude", "Species", "Ec")
-colnames(basilicata_S_locations) <- c("Id", "Latitude", "Longitude", "Species", "Ec")
-
-
-#Combining all the data into one data frame
-basilicata_all_locations <- rbind(basilicata_S_locations, basilicata_G_locations, basilicata_C_locations, salerno_locations)
-basilicata_all_locations$Latitude <- as.numeric(basilicata_all_locations$Latitude)
-basilicata_all_locations$Longitude <- as.numeric(basilicata_all_locations$Longitude)
 
 #Aggregating the data with the same location
 d <- group_by(basilicata_all_locations, Latitude, Longitude) %>% 
