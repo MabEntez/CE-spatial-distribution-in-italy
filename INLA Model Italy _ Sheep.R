@@ -8,18 +8,10 @@ library(ggplot2)
 setwd(dirname(getActiveDocumentContext()$path)) #set file location as working directory
 
 ####Prepping and loading the surveillance data and shapefile####
+#Loading shapefiles
 it_map1 <- st_read("./Italy Shapefile/ITA_adm2.shp")  #this map is used for masking the projections of the model
 it_map <- map_data("italy") #this map is used for visualisation at the end 
 bas_map <- it_map1[c(11,12,22),]
-
-basilicata_all_locations <- read.csv("./BASILICATA_EC_S.csv")
-basilicata_all_locations <- basilicata_all_locations[, c("Longitude",  "Latitude", "Ec")]
-salerno_locations <- read.csv("./New data/SHEEP_FARMS_COORDINATES_SALERNO_2015.csv")
-salerno_locations <- rename(salerno_locations, Ec = Positive, Latitude = POINT_Y, Longitude = POINT_X)
-salerno_locations <- salerno_locations[, c("Longitude",  "Latitude", "Ec")]
-
-all_sheep_locations <- basilicata_all_locations
-all_sheep_locations <- rbind(basilicata_all_locations, salerno_locations)
 
 #Aggregating the data with the same location
 d <- group_by(all_sheep_locations, Latitude, Longitude) %>% 
