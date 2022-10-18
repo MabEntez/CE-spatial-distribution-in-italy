@@ -8,11 +8,10 @@ library(ggplot2)
 setwd(dirname(getActiveDocumentContext()$path)) #set file location as working directory
 
 ####Prepping and loading the surveillance data and shapefile####
+#Loading shapefiles
 it_map1 <- st_read("./Italy Shapefile/ITA_adm2.shp")  #this map is used for masking the projections of the model
 it_map <- map_data("italy") #this map is used for visualisation at the end 
 bas_map <- it_map1[c(11,12),]
-
-basilicata_all_locations <- read.csv("./BASILICATA_EC_G.csv")
 
 #Aggregating the data with the same location
 d <- group_by(basilicata_all_locations, Latitude, Longitude) %>% 
